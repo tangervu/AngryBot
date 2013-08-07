@@ -54,6 +54,20 @@ int main(int argc, char **argv) {
 	while(true) {
 		response = irc.waitForData();
 		for(vector<irc::response>::size_type i=0; i < response.size(); i++) {
+			//Received a private message from another user
+			if(response[i].command == "PRIVMSG" && response[i].recipent == nick && response[i].nick != "") { 
+				irc.message(response[i].nick, "Just leave me alone, I know what I'm doing!");
+			}
+			
+			//Someone mentioned bot name on the public channel
+			else if(response[i].command == "PRIVMSG") {
+				if(response[i].message.compare(0, nick.length(), nick) == 0) {
+					string msg = response[i].nick;
+					msg.append(": Just leave me alone, I know what I'm doing!");
+					irc.message(response[i].recipent, msg);
+				}
+			}
+			/*
 			cout << "Data: " << endl;
 			cout << "\tcommand: " << response[i].command << endl;
 			cout << "\thost: " << response[i].host << endl;
@@ -61,6 +75,7 @@ int main(int argc, char **argv) {
 			cout << "\trecipent: " << response[i].recipent << endl;
 			cout << "\treference: " << response[i].reference << endl;
 			cout << "\tmessage: " << response[i].message << endl;
+			*/
 		}
 	}
 	cout << "Done!" << endl;

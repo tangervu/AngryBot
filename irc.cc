@@ -91,18 +91,27 @@ namespace irc {
 		bool isPartial;
 		if(data.at(data.length()-1) != '\n') {
 			isPartial = true;
+			if(IRC_DEBUG) {
+				cout << "[IRC DEBUG]: data read from socket is partial" << endl;
+			}
 		}
 		else {
 			isPartial = false;
+			if(IRC_DEBUG) {
+				cout << "[IRC DEBUG]: data read from socket is full" << endl;
+			}
 			this->buffer = "";
 		}
 		
-		unsigned int lastRowNum = rows.size() - 1;
+		unsigned int lastRowNum = rows.size();
 		for(vector<string>::size_type i=0; i<lastRowNum; i++) {
 			
 			//Last row was partial, store it into buffer for later use
-			if(i == lastRowNum && isPartial) {
+			if(i == lastRowNum - 1 && isPartial) {
 				this->buffer = rows[i];
+				if(IRC_DEBUG) {
+					cout << "[IRC DEBUG]: New buffer contents: \"" << rows[i] << "\"" << endl;
+				}
 			}
 			
 			else {
